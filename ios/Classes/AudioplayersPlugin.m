@@ -54,22 +54,24 @@ FlutterMethodChannel *_channel_audioplayer;
                   ^{
                     NSLog(@"play!");
                     NSString *url = call.arguments[@"url"];
-                    if (url == nil)
-                      result(0);
-                    if (call.arguments[@"isLocal"]==nil)
-                      result(0);
-                    if (call.arguments[@"volume"]==nil)
-                      result(0);
-                    if (call.arguments[@"position"]==nil)
-                      result(0);
-                    int isLocal = [call.arguments[@"isLocal"]intValue] ;
-                    float volume = (float)[call.arguments[@"volume"] doubleValue] ;
-                    double seconds = call.arguments[@"position"] == [NSNull null] ? 0.0 : [call.arguments[@"position"] doubleValue] ;
-                    CMTime time = CMTimeMakeWithSeconds(seconds,1);
-                    NSLog(@"isLocal: %d %@",isLocal, call.arguments[@"isLocal"] );
-                    NSLog(@"volume: %f %@",volume, call.arguments[@"volume"] );
-                    NSLog(@"position: %f %@", seconds, call.arguments[@"positions"] );
-                    [self play:playerId url:url isLocal:isLocal volume:volume time:time];
+                    [self displayVideoControllerWithUrlString:url];
+                    // return;
+                    // if (url == nil)
+                    //   result(0);
+                    // if (call.arguments[@"isLocal"]==nil)
+                    //   result(0);
+                    // if (call.arguments[@"volume"]==nil)
+                    //   result(0);
+                    // if (call.arguments[@"position"]==nil)
+                    //   result(0);
+                    // int isLocal = [call.arguments[@"isLocal"]intValue] ;
+                    // float volume = (float)[call.arguments[@"volume"] doubleValue] ;
+                    // double seconds = call.arguments[@"position"] == [NSNull null] ? 0.0 : [call.arguments[@"position"] doubleValue] ;
+                    // CMTime time = CMTimeMakeWithSeconds(seconds,1);
+                    // NSLog(@"isLocal: %d %@",isLocal, call.arguments[@"isLocal"] );
+                    // NSLog(@"volume: %f %@",volume, call.arguments[@"volume"] );
+                    // NSLog(@"position: %f %@", seconds, call.arguments[@"positions"] );
+                    // [self play:playerId url:url isLocal:isLocal volume:volume time:time];
                   },
                 @"pause":
                   ^{
@@ -139,6 +141,16 @@ FlutterMethodChannel *_channel_audioplayer;
   if(![call.method isEqualToString:@"setUrl"]) {
     result(@(1));
   }
+}
+
+-(void)displayVideoControllerWithUrlString:(NSString *)urlString {
+    NSURL *channelURL = [NSURL URLWithString:urlString];
+    AVPlayer *player = [AVPlayer playerWithURL:channelURL];
+    AVPlayerViewController *playerViewController = [AVPlayerViewController new];
+    playerViewController.player = player;
+    [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:playerViewController
+                                                                               animated:YES
+                                                                             completion:nil];
 }
 
 -(void) initPlayerInfo: (NSString *) playerId {
